@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GroundPart Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 314302984326049619, guid: 21bbc3259394927c1b0310c65d19a07a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6111966641624155137, guid: 21bbc3259394927c1b0310c65d19a07a, type: 3}
       propertyPath: m_LocalScale.y
       value: 1

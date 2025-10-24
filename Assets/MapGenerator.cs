@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.AI.Navigation;
+using System.Collections;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -14,10 +16,20 @@ public class MapGenerator : MonoBehaviour
     public int MaxWallParts;
     public GameObject GroundObj;
     public GameObject GroundStableContainer;
+    public NavMeshSurface navMeshSurface;
+    public GameObject GroundObjekt;
+    public StartManager startManager;
+    public float Time;
+    public int BlockCount;
+    public int Build;
+    private int s;
+
     [CustomEditor(typeof(MapGenerator))]
 
     void Start()
     {
+        Time = 1;
+        startManager.MapIsDone = false;
         GetPositions();
     }
     public void GetPositions()
@@ -38,9 +50,9 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-        SpawnWalls();
+        StartCoroutine(SpawnWalls());
     }
-    void SpawnWalls()
+    IEnumerator SpawnWalls()
     {
         for (int i = 0; i < WallPositions.Count; i++)
         {
@@ -48,12 +60,13 @@ public class MapGenerator : MonoBehaviour
             WallPart.transform.SetParent(WallContainer.transform);
             WallPrefab.transform.SetParent(WallContainer.transform);
             WallPart.transform.position = WallPositions[i];
+            yield return null;
         }
-        ItemPlacment();
+        StartCoroutine(ItemPlacment());
     }
-    void ItemPlacment()
+    IEnumerator ItemPlacment()
     {
-        int s = Random.Range(10, 100);
+        s = Random.Range(10, 100);
         for (int i = 0; i < s; i++)
         {
             int n = Random.Range(0, Items.Count);
@@ -71,21 +84,41 @@ public class MapGenerator : MonoBehaviour
                     FoundPos = true;
                 }
             }
+            yield return null;
         }
-        BlockPlacer();
+        StartCoroutine(BlockPlacer());
     }
-    void BlockPlacer()
+    IEnumerator BlockPlacer()
     {
-        int BlockCount = Random.Range(50, 250);
+        BlockCount = Random.Range(50, 250);
         for (int i = 0; i < BlockCount; i++)
         {
             int x = Random.Range(MinSize, MaxSize);
             int z = Random.Range(MinSize, MaxSize);
-            Vector3 Pos = new Vector3(x, 0, z);
-            GameObject GroundPrefab = Instantiate(GroundObj);
-            GroundPrefab.transform.SetParent(GroundStableContainer.transform);
-            GroundPrefab.transform.position = Pos;
-
+            Vector3Int Pos = new Vector3Int(x, 0, z);
+            if (!WallPositions.Contains(Pos))
+            {
+                GameObject GroundPrefab = Instantiate(GroundObj);
+                GroundPrefab.transform.SetParent(GroundStableContainer.transform);
+                GroundPrefab.transform.position = Pos;
+            }
+            else
+            {
+                BlockCount += 1;
+            }
+            yield return null;
         }
+        yield return new WaitForSeconds(0.4f);
+        navMeshSurface.BuildNavMesh();
+        GroundObjekt.SetActive(false);
+        startManager.MapIsDone = true;
+    }
+    void Update()
+    {
+        float WallTime = MaxWallParts / WallContainer.transform.childCount;
+        float ItemTime = s / ItemContainer.transform.childCount;
+        float BlockTime = BlockCount / GroundStableContainer.transform.childCount;
+        Time = ((WallTime / ItemTime) + (WallTime / BlockTime)) / 2f * 100f;
+
     }
 }

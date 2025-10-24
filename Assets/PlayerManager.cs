@@ -13,7 +13,7 @@ public class PlayerManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public CharacterController Controller;
-    public Cinemachine3rdPersonFollow cinemachine3Rd;
+    public CinemachineThirdPersonFollow cinemachine3Rd;
     public float speed;
     public GameObject GroundObj;
     public GameObject GroundContainer;
@@ -26,8 +26,9 @@ public class PlayerManager : MonoBehaviour
     public float gravity = -9.81f;
     public float mouseSensitivity = 1;
     private Vector3 velocity;
-    private float xRotation = 0f;
-    private float yRotation = 0f;
+    public CapsuleCollider PlayerHitbox;
+    public Transform PlayerPosition;
+    public Animator CameraAnimator;
 
     void Start()
     {
@@ -128,6 +129,23 @@ public class PlayerManager : MonoBehaviour
                 RotationSpeed * Time.deltaTime
             );
         }
+        Vector2 Scroll = Input.mouseScrollDelta;
+        if (Scroll.y > 0)
+        {
+            cinemachine3Rd.CameraDistance += 0.25f;
+            if (cinemachine3Rd.CameraDistance > 2.5f)
+            {
+                cinemachine3Rd.CameraDistance = 2.5f;
+            }
+        }
+        if (Scroll.y < 0)
+        {
+            cinemachine3Rd.CameraDistance -= 0.25f;
+            if (cinemachine3Rd.CameraDistance < -2)
+            {
+                cinemachine3Rd.CameraDistance = -2;
+            }
+        }
         if (Input.GetMouseButton(1))
         {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
@@ -135,13 +153,9 @@ public class PlayerManager : MonoBehaviour
             Vector3 currentEuler = transform.localEulerAngles;
 
             float newYRotation = currentEuler.y - mouseY;
-            float newXRotation = currentEuler.x - mouseX /4;
+            float newXRotation = 0;
             transform.localRotation = Quaternion.Euler(newXRotation, newYRotation, currentEuler.z);
-
-            if (transform.parent != null)
-            {
-                transform.parent.Rotate(Vector3.up * mouseX);
-            }
+            transform.Rotate(Vector3.up * mouseX);
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -161,5 +175,4 @@ public class PlayerManager : MonoBehaviour
 
 
     }
-
 }

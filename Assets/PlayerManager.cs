@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,6 +19,10 @@ public class PlayerManager : MonoBehaviour
     public GameObject GroundObj;
     public GameObject GroundContainer;
     public int Energy;
+    public int Money;
+    public int Health;
+    public TextMeshProUGUI HealtText;
+    public TextMeshProUGUI MoneyText;
     public List<GameObject> Grounds;
     public TextMeshProUGUI EnergyText;
     public Camera camera;
@@ -29,13 +34,16 @@ public class PlayerManager : MonoBehaviour
     public CapsuleCollider PlayerHitbox;
     public Transform PlayerPosition;
     public Animator CameraAnimator;
-
+    public int Levels;
     void Start()
     {
+
     }
 
     void Update()
     {
+        MoneyText.text = Money.ToString();
+        HealtText.text = Health.ToString();
         EnergyText.text = Energy.ToString();
         switch (Energy)
         {
@@ -87,7 +95,6 @@ public class PlayerManager : MonoBehaviour
                     Grounds.Add(GroundPrefab);
                     GroundPrefab.transform.position = Pos;
                     Energy -= 1;
-
                 }
             }
         }
@@ -141,7 +148,7 @@ public class PlayerManager : MonoBehaviour
         if (Scroll.y < 0)
         {
             cinemachine3Rd.CameraDistance -= 0.25f;
-            if (cinemachine3Rd.CameraDistance < -2)
+            if (cinemachine3Rd.CameraDistance < -2.4)
             {
                 cinemachine3Rd.CameraDistance = -2;
             }
@@ -173,6 +180,6 @@ public class PlayerManager : MonoBehaviour
 
         Controller.Move(finalMovement * Time.deltaTime);
 
-
     }
+
 }

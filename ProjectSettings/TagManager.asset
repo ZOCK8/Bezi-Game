@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Item
   - Enemy
+  - Pumpkin
+  - Energy
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - UI
   - Ground
   - Enemy
-  - 
+  - UIGhost
   - 
   - 
   - 

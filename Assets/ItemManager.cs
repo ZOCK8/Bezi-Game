@@ -20,13 +20,24 @@ public class ItemManager : MonoBehaviour
     // Update is called once per frame
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Item"))
+        if (other.gameObject.CompareTag("Pumpkin"))
         {
             BoxCollider collectedCollider = other.GetComponent<BoxCollider>();
 
             if (collectedCollider != null && ItemColliders.Contains(collectedCollider))
             {
-                playerManager.Energy += 10;
+                playerManager.Money += 1;
+                ItemColliders.Remove(other.GetComponent<BoxCollider>());
+                Destroy(other.gameObject);
+            }
+        }
+        if (other.gameObject.CompareTag("Energy"))
+        {
+            BoxCollider collectedCollider = other.GetComponent<BoxCollider>();
+
+            if (collectedCollider != null && ItemColliders.Contains(collectedCollider))
+            {
+                playerManager.Energy += 15;
                 ItemColliders.Remove(other.GetComponent<BoxCollider>());
                 Destroy(other.gameObject);
             }

@@ -28,7 +28,6 @@ public class GhostHunter : MonoBehaviour
         float Distance = Vector3.Distance(transform.position, playerManager.PlayerPosition.position);
         if (Distance <= 20)
         {
-            Debug.Log("InPlayerRange");
             InPlayerRange = true;
         }
         if (GetComponent<NavMeshAgent>().velocity.magnitude < 0.1f && !BlockWalk)
